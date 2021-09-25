@@ -24,7 +24,7 @@
 		</dependency>
 ```
 
-**Create in memory db by adding following to your ** ``application.properties`` <br>
+**Create in memory db by adding following to your** ``application.properties`` <br>
 
 ```properties
 spring.datasource.url=jdbc:h2:mem:testdb
