@@ -54,5 +54,11 @@ class CourseRepositoryTest {
 		Course c1 = repository.findById(1000L);
 		assertEquals("Powerful people come from powerful places",c.getName());
 	}
+	
+	@Test
+	@DirtiesContext
+	void playWithEntityManager() {
+		repository.playWithEntityManager();
+	}
 
 }

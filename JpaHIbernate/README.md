@@ -52,3 +52,70 @@
 		
 	}
 ```
+
+###Importance of ``@Transactional`` annotation in Repository. <br>
+
+```java
+	@Repository
+	@Transactional
+	public class CourseRepository {
+	....
+		public void playWithEntityManager() {
+			Course entity = new Course("WebServices");
+			em.persist(entity);
+			entity.setName("SpringBoot WeServices");
+		}
+	....
+	}
+```
+
+Output <br>
+
+```log
+Hibernate: call next value for hibernate_sequence
+Hibernate: insert into course (name, id) values (?, ?)
+Hibernate: update course set name=? where id=?
+```
+As you can see after executing insert query for ``em.persist(entity)``, update is executed. 
+This is beacause ``@Transactional`` ensures that there is atomic execution of operation that is either all or non.
+
+## Some Imp Methods of ``EntityManager``
+1. ``flush()`` saves the changes till this point to database <br>
+
+```java
+	public void playWithEntityManager() {
+		Course entity = new Course("WebServices");
+		em.persist(entity);
+		em.flush(); /*flush() is EntityManager method that upon calling changes are updated to db till that point
+		             So, due to 2 flush() method this transaction will have two operations to perform.*/
+		
+		
+		entity.setName("SpringBoot WeServices");
+		em.flush();
+		
+	}
+```
+2. ``detach()`` If you want to stop tracking the changes of an object as a part of transaction <br>
+
+```java
+	public void playWithEntityManager() {
+		Course entity = new Course("WebServices");
+		em.persist(entity);
+		em.flush(); /*flush() is EntityManager method that upon calling changes are updated to db till that point
+		             So, due to 2 flush() method this transaction will have two operations to perform.*/
+		
+		
+		entity.setName("SpringBoot WeServices");
+		em.flush();
+		
+		Course course2 = new Course("Dragon ball z ");
+		em.persist(course2);
+		em.flush();
+		
+		em.detach(course2); // stop tracking changes to course2 as part of transaction
+		course2.setName("One piece is the best anime ever");
+		em.flush();
+		
+	}
+```
+
