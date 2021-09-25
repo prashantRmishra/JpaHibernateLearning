@@ -25,7 +25,8 @@ public class JpaHibernateApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		Course findById = repo.findById(10001L);
 		logger.info("Find by id 10001->{}",findById);
-		repo.delete(10001L);
+		//repo.delete(10001L);
+		logger.info("Insert -> {}",repo.save(new Course("Hang in there")));
 		
 	}
 
