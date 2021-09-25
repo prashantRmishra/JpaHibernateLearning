@@ -30,7 +30,7 @@
 spring.datasource.url=jdbc:h2:mem:testdb
 
 ```
-**To access H2 console on /h2-console endpoint in the browser add following to your ** ``application.properties`` <br>
+**To access H2 console on /h2-console endpoint in the browser add following to your** ``application.properties`` <br>
 
 ```properties
 spring.h2.console.enabled=true
