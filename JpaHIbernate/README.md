@@ -117,7 +117,7 @@ Hibernate: insert into course (name, id) values (?, ?)
 ```
 H2-console : As you can see ``One piece is the best anime ever`` is not updated <br>
 
-<img src="src/main/resources/static/images/h2-console-detach.PNG" width="500" height="400"> <br>
+<img src="src/main/resources/static/images/h2-console-detach.PNG" width="400" height="300"> <br>
 
 ``clear()`` It is similar to ``detach(Object)`` , but once it is called it will everything that is being tracked by ``EntityManager`` .
 
@@ -153,7 +153,7 @@ Hibernate: insert into course (name, id) values (?, ?)
 ```
 H2-console: As you can see after ``clear()`` changes to ``entity`` and ``course2`` are not updated.
 
-<img src="src/main/resources/static/images/h2-console-clear.PNG" width="500" height="400"> <br>
+<img src="src/main/resources/static/images/h2-console-clear.PNG" width="400" height="300"> <br>
 
 ``refresh(Object)`` this method makes the object synchronize with the db , that is ``entity`` and ``course2`` will have the same value 
 what is stored in the db before ``clear()`` or ``detach()`` is called. See the below code.
@@ -188,7 +188,7 @@ Hibernate: update course set name=? where id=? // update name of course 2
 
 h2-console: As you can see ``course2``(id=2) is updated but ``course1``(id=1) is not updated
 
-<img src="src/main/resources/static/images/flush.PNG" width="500" height="400"> <br>
+<img src="src/main/resources/static/images/flush.PNG" width="400" height="300"> <br>
 
 ***
 ### For Unit test cases you can see files in ``src/test/java`` folder <br>
@@ -354,8 +354,10 @@ _List of test cases for native queries in: _ `` NativeQueriesTest.java``
 		logger.info("select * from course where id = 10001L : -> {}",resultList);
 	}
 ```
+
 4.Native Query for mass update
 ---
+
 Sometimes It is not efficient to use JPQL e.g for updating all the rows of the table. <br>
 If you were to do that with ``JPQL`` you will fetch each row and update them one by one which is not efficient.
 Hence, you will have to use Native Query
@@ -368,6 +370,210 @@ Hence, you will have to use Native Query
 		int noOfROwsUpdated = q.executeUpdate();
 		logger.info("No of rows updated -> {}",noOfROwsUpdated);
 	}
+```
+# Establishing Relationship between JPA and Hibernate  <br>
+
+@OneToOne
+---
+
+**Afetr creating Entity of ** ``Student.java``, ``Passport.java``,``Review.java``
+
+As ``Student`` is to related to one ``Passport`` and ``Passport`` is related to one ``Student`` only. <br>
+Create an foreign key of ``Passport`` (id) in ``Student`` or vice versa (as the relationship is oneToOne) <br>
+In ``Student.java``
+
+```java
+	@Id
+	@GeneratedValue
+	private Long id;
+	@Column(nullable=false)
+	private String name;
 	
-```		
+	@OneToOne
+	private Passport passport; // foreign key of Passport.id , Jpa will create column as passport_id in table student
+	//The version of springboot while developing this app is 2.2.5 , and _id is auto appended in passport column of student table
+```
+
+**populate data in db like this from your ** ``data.sql`` file <br>
+
+```sql
+--Passport
+insert into Passport(id,number) values(30001,'E1234');
+insert into Passport(id,number) values(30002,'E1235');
+insert into passport(id,number) values(30003,'E1236');
+
+--Student
+insert into Student(id,name,passport_id) values(20001,'Prashant',30001);
+insert into Student(id,name,passport_id) values(20002,'Sandeep',30002);
+insert into Student(id,name,passport_id) values(20003,'Ajay',30003);
+```
+Console Output:
+
+```log
+Hibernate: create sequence hibernate_sequence start with 1 increment by 1
+Hibernate: create table passport (id bigint not null, number varchar(255) not null, primary key (id))
+Hibernate: create table student (id bigint not null, name varchar(255) not null, passport_id bigint, primary key (id))
+Hibernate: alter table student add constraint FK6i2dofwfuu97njtfprqv68pib foreign key (passport_id) references passport
+```
+
+h2-console after running the app <br>
+
+<img src="src/main/resources/static/images/onetoone-student-passport.PNG" width="400" height="300">
+
+**Populating data in table ** ``passport`` **and** ``student`` **using** ``EntityManager`` <br>
+
+In ``StudentRepository.java`` add following method <br>
+
+```java
+	public void saveStudentWithPassport() {
+		Passport passport = new Passport("TU3f1516029");
+		em.persist(passport); // first insert passport in table else Exception will bee thrown for violating referential integrity constraint
+		
+		Student student   = new Student("Joe Biden");
+		student.setPassport(passport);
+		em.persist(student); // after persisting passport, we can easily persist student with any exception
+		
+	}
+```
+H2-console output <br>
+<img src="src/main/resources/static/images/em-student-passport-persist.PNG" width="400" height="300"> <br>
+
+____
+**Unit test cases for OneToOne relations i.e ** ``student`` and ``passport`` <br>
+``StudentRepository.java``
+
+Eager Fetch 
+----
+
+```java
+class StudentRepositoryTest {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	StudentRepository repository;
+	
+	@Autowired
+	EntityManager entityManager;
+
+	@Test
+	void findStudentWithPassport() {
+		Student student = entityManager.find(Student.class, 20001L);
+		logger.info("Student -> {}",student);
+		logger.info("Passport -> {}",student.getPassport()); 
+	}
+	
+}
+```
+Console Output: <br>
+
+```log
+Hibernate: select student0_.id as id1_3_0_, student0_.name as name2_3_0_, student0_.passport_id as passport3_3_0_, passport1_.id as id1_1_1_, passport1_.number as number2_1_1_ from student student0_ left outer join passport passport1_ on student0_.passport_id=passport1_.id where student0_.id=?
+2021-09-26 18:15:40.020  INFO 19284 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student -> 
+Student [name=Prashant]
+2021-09-26 18:15:40.020  INFO 19284 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Passport -> 
+Passport [number=E1234]
+```
+**Eager Fetch :**  As you can see in the console output along with ``student`` detail ``passport`` details are also fetch with the help of ``left outer join``
+
+Lazy Fetch
+----
+If I had written only ``logger.info("Student -> {}",student);`` in above test , still passport details would have been fetched, For large scaple application it would result in performance issues. To avoid this ``Lasy fetch`` is used. <br>
+
+**For Lazy fetching specify ** ``type`` in ``@OneToOne`` annotation in ``Student.java``.
+
+```java
+	@Entity
+
+public class Student {
+	@Id
+	@GeneratedValue
+	private Long id;
+	@Column(nullable=false)
+	private String name;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	private Passport passport;
+	...
+	}
+```
+**If you run the above test again you will get ** ``org.hibernate.LazyInitializationException`` This is because Hibernate session is killed right after fetching the ``student`` details.
+
+**But if you want to fetch passport details in lazy fetch , you will have to use ** ``@Transactional`` to the test method , by using ``@Transactional`` Hibernate session is not killed and hibernate query is run to fetch passport details from the table ``passport`` <br>
+
+```java
+	@Test
+	@Transactional
+	void findStudentWithPassport() {
+		Student student = entityManager.find(Student.class, 20001L);
+		logger.info("Student -> {}",student);
+		logger.info("Passport -> {}",student.getPassport());
+	}
+```
+
+**See the below console output after running the same test in ** ``lazy fetch`` , with ``@Transactional`` annotation. <br>
+
+
+```log
+
+Hibernate: select student0_.id as id1_3_0_, student0_.name as name2_3_0_, student0_.passport_id as passport3_3_0_ from student student0_ where student0_.id=?
+2021-09-26 18:54:39.358  INFO 23096 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student -> 
+Student [name=Prashant]
+Hibernate: select passport0_.id as id1_1_0_, passport0_.number as number2_1_0_ from passport passport0_ where passport0_.id=?
+2021-09-26 18:54:39.358  INFO 23096 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Passport -> 
+Passport [number=E1234]
+
+```
+
+<p style="color:green">This is the magic of hibernate , without exlicitly specifying it automatically fetched the passport details </p>
+
+****
+
+Transaction, Entity Manager and Persistence Contest
+----
+Once you define transaction (by specifying ``@Transactional``) you would also be creating something called **Persistence Context **, Persistence Contest is a place where all entities you are operating are stored.<br>
+
+
+**The way we interact with ** ``Persistence Context`` **is by using** ``EntityManager``
+
+
+```java
+	@Test
+	@Transactional // Persistence Context will be created
+	void someTest() {
+		
+		//Operation 1 : Retrive Student
+		Student student = entityManager.find(Student.class, 20002L);
+		//Persistence Context will have (Student)
+		
+		//Operation 2 : Retrive Passport
+		Passport passport = student.getPassport();
+		//Persistence Context will have (Student,Passport)
+		
+		//Operation 3 : Update Passport number
+		passport.setNumber("JB007");
+		//Persistence Context will have (Student,Passport++)
+		//Operation 4 : Update Student Name
+		
+		student.setName("Sandeep-updated");
+		//Persistence Context will have (Student++,Passport++)
+	}
+	
+```
+
+Beacause of the ``@transactional`` the query will be fired at the end of all the operations.
+If ``@Transactional`` is not specified then each operation will act as independent Transaction, and hibernate session will be killed after the operation 1 and we will get ``org.hibernate.LazyInitializationException``
+
+****
+
+OneToOne mapping Bidirectional Relationship
+----
+
+
+
+	
+	 
+
+
+	
+
 

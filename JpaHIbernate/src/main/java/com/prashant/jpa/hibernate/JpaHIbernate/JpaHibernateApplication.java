@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.CourseRepository;
+import com.prashant.jpa.hibernate.JpaHIbernate.repository.StudentRepository;
 
 @SpringBootApplication
 public class JpaHibernateApplication implements CommandLineRunner {
@@ -16,6 +17,8 @@ public class JpaHibernateApplication implements CommandLineRunner {
 
 	@Autowired
 	CourseRepository repo;
+	@Autowired
+	StudentRepository studentRepository;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	public static void main(String[] args) {
 		SpringApplication.run(JpaHibernateApplication.class, args);
@@ -30,6 +33,10 @@ public class JpaHibernateApplication implements CommandLineRunner {
 		//repo.playWithEntityManager();
 		//repo.playWithEntityManagerCreatedAndUpdatedTimeStamp();
 		//logger.info("All course are -> {}",repo.findAll());
+		//----------------------------------------------------------------------
+		
+		//logger.info("All Students are-> {}",studentRepository.findAll());
+		//studentRepository.saveStudentWithPassport();
 		
 	}
 
