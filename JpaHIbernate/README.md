@@ -376,7 +376,7 @@ Hence, you will have to use Native Query
 @OneToOne
 ---
 
-**Afetr creating Entity of ** ``Student.java``, ``Passport.java``,``Review.java``
+**Afetr creating Entity of** ``Student.java``, ``Passport.java``,``Review.java``
 
 As ``Student`` is to related to one ``Passport`` and ``Passport`` is related to one ``Student`` only. <br>
 Create an foreign key of ``Passport`` (id) in ``Student`` or vice versa (as the relationship is oneToOne) <br>
@@ -394,7 +394,7 @@ In ``Student.java``
 	//The version of springboot while developing this app is 2.2.5 , and _id is auto appended in passport column of student table
 ```
 
-**populate data in db like this from your ** ``data.sql`` file <br>
+**populate data in db like this from your** ``data.sql`` **file** <br>
 
 ```sql
 --Passport
@@ -420,7 +420,8 @@ h2-console after running the app <br>
 
 <img src="src/main/resources/static/images/onetoone-student-passport.PNG" width="400" height="300">
 
-**Populating data in table ** ``passport`` **and** ``student`` **using** ``EntityManager`` <br>
+
+**Populating data in table** ``passport`` **and** ``student`` **using** ``EntityManager`` <br>
 
 In ``StudentRepository.java`` add following method <br>
 
@@ -439,7 +440,7 @@ H2-console output <br>
 <img src="src/main/resources/static/images/em-student-passport-persist.PNG" width="400" height="300"> <br>
 
 ____
-**Unit test cases for OneToOne relations i.e ** ``student`` and ``passport`` <br>
+**Unit test cases for OneToOne relations i.e** ``student`` and ``passport`` <br>
 ``StudentRepository.java``
 
 Eager Fetch 
@@ -496,9 +497,9 @@ public class Student {
 	...
 	}
 ```
-**If you run the above test again you will get ** ``org.hibernate.LazyInitializationException`` This is because Hibernate session is killed right after fetching the ``student`` details.
+**If you run the above test again you will get** ``org.hibernate.LazyInitializationException`` **This is because Hibernate session is killed right after fetching the** ``student`` **details.**
 
-**But if you want to fetch passport details in lazy fetch , you will have to use ** ``@Transactional`` to the test method , by using ``@Transactional`` Hibernate session is not killed and hibernate query is run to fetch passport details from the table ``passport`` <br>
+**But if you want to fetch passport details in lazy fetch , you will have to use** ``@Transactional`` to the test method , by using ``@Transactional`` Hibernate session is not killed and hibernate query is run to fetch passport details from the table ``passport`` <br>
 
 ```java
 	@Test
@@ -510,11 +511,9 @@ public class Student {
 	}
 ```
 
-**See the below console output after running the same test in ** ``lazy fetch`` , with ``@Transactional`` annotation. <br>
-
+**See the below console output after running the same test in** ``lazy fetch`` , with ``@Transactional`` annotation. <br>
 
 ```log
-
 Hibernate: select student0_.id as id1_3_0_, student0_.name as name2_3_0_, student0_.passport_id as passport3_3_0_ from student student0_ where student0_.id=?
 2021-09-26 18:54:39.358  INFO 23096 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student -> 
 Student [name=Prashant]
