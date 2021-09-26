@@ -1,6 +1,9 @@
 package com.prashant.jpa.hibernate.JpaHIbernate.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -38,6 +41,12 @@ public class CourseRepository {
 		return c;
 	}
 	
+	/*JPQL (Java Persistence Query Language)*/
+	public List<Course> findAll(){
+		TypedQuery<Course> query = em.createNamedQuery("find_all_courses",Course.class);
+		return query.getResultList();
+	}
+	
 	public void playWithEntityManager() {
 		Course course1 = new Course("WebServices");
 		em.persist(course1);
@@ -49,9 +58,17 @@ public class CourseRepository {
 		course2.setName("One piece is the best anime ever");
 		course1.setName("SpringBoot WeServices");
 		
-		em.refresh(course1); // refreash() updates the respective object to have the same values as the db, which is returned and hibernate select query is executed  
+		em.refresh(course1); // refresh() updates the respective object to have the same values as the db, which is returned and hibernate select query is executed  
 		em.flush();
 		
+		
+	}
+	public void playWithEntityManagerCreatedAndUpdatedTimeStamp() {
+		Course course1 = new Course("WebServices");
+		em.persist(course1);
+		em.flush();
+		Course course2  = findById(course1.getId());
+		course2.setName("WebServices-Updated");
 		
 	}
 	
