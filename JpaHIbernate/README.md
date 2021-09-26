@@ -79,8 +79,13 @@ Hibernate: update course set name=? where id=?
 As you can see after executing insert query for ``em.persist(entity)``, update is executed. 
 This is beacause ``@Transactional`` ensures that there is atomic execution of operation that is either all or non.
 
+***
+
 ## Some Imp Methods of ``EntityManager``
-1. ``flush()`` saves the changes till this point to database <br>
+
+
+
+``flush()`` saves the changes till this point to database <br>
 
 ```java
 	public void playWithEntityManager() {
@@ -95,7 +100,8 @@ This is beacause ``@Transactional`` ensures that there is atomic execution of op
 		
 	}
 ```
-2. ``detach()`` If you want to stop tracking the changes of an object as a part of transaction <br>
+
+``detach(Object)`` If you want to stop tracking the changes of an object as a part of transaction <br>
 
 ```java
 	public void playWithEntityManager() {
@@ -118,4 +124,86 @@ This is beacause ``@Transactional`` ensures that there is atomic execution of op
 		
 	}
 ```
+Console Output
 
+```log
+Hibernate: call next value for hibernate_sequence
+Hibernate: insert into course (name, id) values (?, ?)
+Hibernate: update course set name=? where id=?
+Hibernate: call next value for hibernate_sequence
+Hibernate: insert into course (name, id) values (?, ?)
+```
+H2-console : As you can see ``One piece is the best anime ever`` is not updated <br>
+
+<img src="src/main/resources/static/images/h2-console-detach.PNG" width="500" height="400"> <br>
+
+``clear()`` It is similar to ``detach(Object)`` , but once it is called it will everything that is being tracked by ``EntityManager`` .
+
+```java
+
+	public void playWithEntityManager() {
+		Course entity = new Course("WebServices");
+		em.persist(entity);
+		em.flush(); /*flush() is EntityManager method that upon calling changes are updated to db till that point
+		             So, due to 2 flush() method this transaction will have two operations to perform.*/
+		
+		Course course2 = new Course("Dragon ball z ");
+		em.persist(course2);
+		em.flush();
+		
+		em.clear(); // stops tracking changes to course2 and entity both
+		course2.setName("One piece is the best anime ever");
+		em.flush();
+		
+		entity.setName("SpringBoot WeServices");
+		em.flush();
+		
+	}
+
+```
+Console Output <br>
+
+```log
+Hibernate: call next value for hibernate_sequence
+Hibernate: insert into course (name, id) values (?, ?)
+Hibernate: call next value for hibernate_sequence
+Hibernate: insert into course (name, id) values (?, ?)
+```
+H2-console: As you can see after ``clear()`` changes to ``entity`` and ``course2`` are not updated.
+
+<img src="src/main/resources/static/images/h2-console-clear.PNG" width="500" height="400"> <br>
+
+``refreash(Object)`` this method makes the object synchronize with the db , that is ``entity`` and ``course2`` will have the same value 
+what is stored in the db before ``clear()`` or ``detach()`` is called. See the below code.
+
+```java
+	public void playWithEntityManager() {
+		Course course1 = new Course("WebServices");
+		em.persist(course1);
+		Course course2 = new Course("Dragon ball z ");
+		em.persist(course2);
+		em.flush(); /*flush() is EntityManager method that upon calling changes are updated to db till that point
+        So, due to 2 flush() method this transaction will have two operations to perform.*/
+		
+		course2.setName("One piece is the best anime ever");
+		course1.setName("SpringBoot WeServices");
+		
+		em.refresh(course1); // refreash() updates the respective object to have the same values as the db, which is returned and hibernate select query is executed  
+		em.flush();
+		
+		
+	}
+```
+Console Output 
+
+```log
+Hibernate: insert into course (name, id) values (?, ?) //1st flush()
+Hibernate: insert into course (name, id) values (?, ?) //2nd flush()
+Hibernate: select course0_.id as id1_0_0_, course0_.name as name2_0_0_ from course course0_ where course0_.id=? //refreash() of course1
+Hibernate: update course set name=? where id=? // update name of course 2
+```
+***
+
+h2-console: As you can see ``course2``(id=2) is updated but ``course1``(id=1) is not updated
+
+<img src="src/main/resources/static/images/flush.PNG" width="500" height="400"> <br>

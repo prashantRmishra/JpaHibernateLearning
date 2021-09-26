@@ -39,22 +39,19 @@ public class CourseRepository {
 	}
 	
 	public void playWithEntityManager() {
-		Course entity = new Course("WebServices");
-		em.persist(entity);
-		em.flush(); /*flush() is EntityManager method that upon calling changes are updated to db till that point
-		             So, due to 2 flush() method this transaction will have two operations to perform.*/
-		
-		
-		entity.setName("SpringBoot WeServices");
-		em.flush();
-		
+		Course course1 = new Course("WebServices");
+		em.persist(course1);
 		Course course2 = new Course("Dragon ball z ");
 		em.persist(course2);
+		em.flush(); /*flush() is EntityManager method that upon calling changes are updated to db till that point
+        So, due to 2 flush() method this transaction will have two operations to perform.*/
+		
+		course2.setName("One piece is the best anime ever");
+		course1.setName("SpringBoot WeServices");
+		
+		em.refresh(course1); // refreash() updates the respective object to have the same values as the db, which is returned and hibernate select query is executed  
 		em.flush();
 		
-		em.detach(course2); // stop tracking changes to course2 as part of transaction
-		course2.setName("One piece is the best anime ever");
-		em.flush();
 		
 	}
 	
