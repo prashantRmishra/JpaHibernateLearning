@@ -35,7 +35,7 @@
 	}
 ```
 
-###Importance of ``@Transactional`` annotation in Repository. <br>
+### Importance of ``@Transactional`` annotation in Repository. <br>
 
 ```java
 	@Repository
@@ -254,7 +254,7 @@ class CourseRepositoryJpqlTest {
 
 ```
 
-###Important Annotation provided by JPA and Hibernate
+### Important Annotation provided by JPA and Hibernate
 
 ____
 
@@ -315,7 +315,7 @@ For using multiple Named Query we can use it.
 ```
 ____
 
-###Native Queries
+### Native Queries
 
 **These are nothing but standard SQL Queries**
 
