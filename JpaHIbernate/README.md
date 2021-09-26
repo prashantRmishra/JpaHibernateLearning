@@ -155,7 +155,7 @@ H2-console: As you can see after ``clear()`` changes to ``entity`` and ``course2
 
 <img src="src/main/resources/static/images/h2-console-clear.PNG" width="500" height="400"> <br>
 
-``refreash(Object)`` this method makes the object synchronize with the db , that is ``entity`` and ``course2`` will have the same value 
+``refresh(Object)`` this method makes the object synchronize with the db , that is ``entity`` and ``course2`` will have the same value 
 what is stored in the db before ``clear()`` or ``detach()`` is called. See the below code.
 
 ```java
@@ -181,7 +181,7 @@ Console Output
 ```log
 Hibernate: insert into course (name, id) values (?, ?) //1st flush()
 Hibernate: insert into course (name, id) values (?, ?) //2nd flush()
-Hibernate: select course0_.id as id1_0_0_, course0_.name as name2_0_0_ from course course0_ where course0_.id=? //refreash() of course1
+Hibernate: select course0_.id as id1_0_0_, course0_.name as name2_0_0_ from course course0_ where course0_.id=? //refresh() of course1
 Hibernate: update course set name=? where id=? // update name of course 2
 ```
 ***
