@@ -566,7 +566,60 @@ If ``@Transactional`` is not specified then each operation will act as independe
 
 OneToOne mapping Bidirectional Relationship
 ----
+Till now the relationship between ``student`` and ``passport`` was **Unidirectional** ``oneToOne`` i.e we can fetch ``passport`` details while fetching ``student`` details. But if we want to fetch ``student`` details while fetching ``passport`` details the relationship has to be **Bidirectional** <br>
 
+**We can achieve Bidirectional OneToOne Relationship by adding ** ``Student`` property to ``Passport.java``
+
+```java
+
+@Entity
+public class Passport {
+	@Id
+	@GeneratedValue
+	private Long id;
+	@Column(nullable = false)
+	private String number;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	private Student student;
+	....
+	}
+```
+
+<p style="color:red"> But this will lead in redundancy i.e Student will be referencing to passport and passport will also be referencing to student, this will lead in duplicate data.</p> <br>
+
+
+<p style="color:green"> To avoid this we can make one of the entity as owning Entity. Let say I want to make Student Owning Entity, then We will have to add <strong style="color:black"> mappedBy="passport" as "passport" is the variable name defined in Student.java </strong> attribute to non owning side of the relationship i.e passport </p> 
+
+
+```java
+@OneToOne(fetch = FetchType.LAZY,mappedBy = "passport")
+	private Student student;
+```
+
+H2-console output: <br>
+
+<img src ="src/main/resources/static/images/bidirectional-mapped-by.PNG" width="400" height="400">
+
+Now we can easily retrieve ``student`` details by retrieving ``passport`` details <br>
+
+```java
+@Test
+	@Transactional
+	void findPassportWithAssociatedStudent() {
+		Passport passport = entityManager.find(Passport.class, 30002L);
+		logger.info("Passport -> {}",passport);
+		logger.info("Student -> {}",passport.getStudent());
+	}
+```
+
+Console Output : <br>
+
+> 2021-09-27 07:14:19.078  INFO 20896 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Passport -> 
+> Passport [number=E1235]
+2021-09-27 07:14:19.079  INFO 20896 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student -> 
+Student [name=Sandeep]
+	
 
 
 	
