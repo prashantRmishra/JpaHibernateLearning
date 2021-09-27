@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.ManyToAny;
 
 
 @Entity
@@ -15,6 +18,15 @@ public class Review {
 	
 	private String description;
 	
+	@ManyToOne  /// as many review Obj could be associated to only one course
+	private Course course; 
+	
+	public Course getCourse() {
+		return course;
+	}
+	public void setCourse(Course course) {
+		this.course = course;
+	}
 	public Long getId() {
 		return id;
 	}

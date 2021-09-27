@@ -619,6 +619,71 @@ Passport [number=E1235]
 2021-09-27 07:14:19.079  INFO 20896 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student -> 
 Student [name=Sandeep]
 ```
+
+@OneToMany and @ManyToMany
+----
+
+**OneToMany** : one ``course`` can have many ``review``'s i.e ``course`` can participate more that once in the relationship, bit ``review`` can participate only once. 
+so , ``review`` is associated with ``course``, and without ``course`` , ``review`` does not make any sense. <br>
+
+Modify ``Review.java`` like following code : <br>
+
+```java
+@Entity
+public class Review {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String rating;
+	
+	private String description;
+	
+	@ManyToOne  /// as many review Obj could be associated to only one course
+	private Course course; 
+	....
+	}
+```
+
+**NOTE:** In course_review(oneToMany) table primary_key will be review(id) as it will be unique. You know this.
+
+Example, No one ``review`` id can belong to two different ``course``.
+
+**ManyToMany**: Many ``student`` can enroll in Many ``course``. Similarly many ``course`` can have many ``student``
+
+Modify ``Course.java`` like following code : <br>
+
+```java
+@Entity
+@NamedQuery(name = "find_all_courses", query = "select c from Course c")
+public class Course {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	
+	@UpdateTimestamp
+	private LocalDateTime updatedDate;
+	@CreationTimestamp
+	private LocalDateTime createdDate;
+	
+	@OneToMany(mappedBy = "course")  /// As this Course obj could have many review
+	List<Review> reviews = new ArrayList<>();
+	
+	public List<Review> getReviews() {
+		return reviews;
+	}
+	/*Instead of setReview(List<Review> reviews) , we should have addReview(Review r)
+	that lets user add a review. */
+	public void addReviews(Review review) {  
+		this.reviews.add(review);
+	}
+	/*Similarly, removeReview(Review r) will let user to remove a review*/
+	public void removeReview(Review review) {
+		this.reviews.remove(review);
+	}
+	
+```
+**As** ``review`` **is the owning side of the relationship. Hence, ** ``mappedBy`` **will be put in non-owning side ** ``course`` <br>
 	
 
 

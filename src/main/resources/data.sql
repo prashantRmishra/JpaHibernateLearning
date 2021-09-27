@@ -1,3 +1,4 @@
+--Course
 insert into Course(id,name,created_date,updated_date) values(10001,'JPA in 100 steps',sysdate(),sysdate());
 insert into Course(id,name,created_date,updated_date) values(10002,'Perseverance',sysdate(),sysdate());
 insert into Course(id,name,created_date,updated_date) values(10003,'is the key',sysdate(),sysdate());
@@ -14,8 +15,8 @@ insert into Student(id,name,passport_id) values(20002,'Sandeep',30002);
 insert into Student(id,name,passport_id) values(20003,'Ajay',30003);
 
 --Review
-insert into Review(id,rating,description) values(40001,'****','Good course');
-insert into Review(id,rating,description) values(40002,'*','Shitty course');
-insert into Review(id,rating,description) values(40003,'**','Not sure what to say about this course');
+insert into Review(id,rating,description,course_id) values(40001,'****','Good course',10001);
+insert into Review(id,rating,description,course_id) values(40002,'*','Shitty course',10002);
+insert into Review(id,rating,description,course_id) values(40003,'**','Not sure what to say about this course',10003);
 
 
