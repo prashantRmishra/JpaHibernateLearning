@@ -53,11 +53,12 @@
 
 Output <br>
 
-```log
+
+>
 Hibernate: call next value for hibernate_sequence
 Hibernate: insert into course (name, id) values (?, ?)
 Hibernate: update course set name=? where id=?
-```
+
 As you can see after executing insert query for ``em.persist(entity)``, update is executed. 
 This is beacause ``@Transactional`` ensures that there is atomic execution of operation that is either all or non.
 
@@ -108,13 +109,13 @@ This is beacause ``@Transactional`` ensures that there is atomic execution of op
 ```
 Console Output
 
-```log
+>
 Hibernate: call next value for hibernate_sequence
 Hibernate: insert into course (name, id) values (?, ?)
 Hibernate: update course set name=? where id=?
 Hibernate: call next value for hibernate_sequence
 Hibernate: insert into course (name, id) values (?, ?)
-```
+
 H2-console : As you can see ``One piece is the best anime ever`` is not updated <br>
 
 <img src="src/main/resources/static/images/h2-console-detach.PNG" width="400" height="300"> <br>
@@ -145,12 +146,12 @@ H2-console : As you can see ``One piece is the best anime ever`` is not updated 
 ```
 Console Output <br>
 
-```log
+>
 Hibernate: call next value for hibernate_sequence
 Hibernate: insert into course (name, id) values (?, ?)
 Hibernate: call next value for hibernate_sequence
 Hibernate: insert into course (name, id) values (?, ?)
-```
+
 H2-console: As you can see after ``clear()`` changes to ``entity`` and ``course2`` are not updated.
 
 <img src="src/main/resources/static/images/h2-console-clear.PNG" width="400" height="300"> <br>
@@ -178,13 +179,15 @@ what is stored in the db before ``clear()`` or ``detach()`` is called. See the b
 ```
 Console Output 
 
-```log
+>
 Hibernate: insert into course (name, id) values (?, ?) //1st flush()
 Hibernate: insert into course (name, id) values (?, ?) //2nd flush()
 Hibernate: select course0_.id as id1_0_0_, course0_.name as name2_0_0_ from course course0_ where course0_.id=? //refresh() of course1
 Hibernate: update course set name=? where id=? // update name of course 2
-```
+
+
 ***
+
 
 h2-console: As you can see ``course2``(id=2) is updated but ``course1``(id=1) is not updated
 
@@ -409,12 +412,12 @@ insert into Student(id,name,passport_id) values(20003,'Ajay',30003);
 ```
 Console Output:
 
-```log
+>
 Hibernate: create sequence hibernate_sequence start with 1 increment by 1
 Hibernate: create table passport (id bigint not null, number varchar(255) not null, primary key (id))
 Hibernate: create table student (id bigint not null, name varchar(255) not null, passport_id bigint, primary key (id))
 Hibernate: alter table student add constraint FK6i2dofwfuu97njtfprqv68pib foreign key (passport_id) references passport
-```
+
 
 h2-console after running the app <br>
 
@@ -467,13 +470,13 @@ class StudentRepositoryTest {
 ```
 Console Output: <br>
 
-```log
+>
 Hibernate: select student0_.id as id1_3_0_, student0_.name as name2_3_0_, student0_.passport_id as passport3_3_0_, passport1_.id as id1_1_1_, passport1_.number as number2_1_1_ from student student0_ left outer join passport passport1_ on student0_.passport_id=passport1_.id where student0_.id=?
 2021-09-26 18:15:40.020  INFO 19284 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student -> 
 Student [name=Prashant]
 2021-09-26 18:15:40.020  INFO 19284 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Passport -> 
 Passport [number=E1234]
-```
+
 **Eager Fetch :**  As you can see in the console output along with ``student`` detail ``passport`` details are also fetch with the help of ``left outer join``
 
 Lazy Fetch
@@ -513,7 +516,7 @@ public class Student {
 
 **See the below console output after running the same test in** ``lazy fetch`` , with ``@Transactional`` annotation. <br>
 
-```log
+>
 Hibernate: select student0_.id as id1_3_0_, student0_.name as name2_3_0_, student0_.passport_id as passport3_3_0_ from student student0_ where student0_.id=?
 2021-09-26 18:54:39.358  INFO 23096 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student -> 
 Student [name=Prashant]
@@ -521,7 +524,7 @@ Hibernate: select passport0_.id as id1_1_0_, passport0_.number as number2_1_0_ f
 2021-09-26 18:54:39.358  INFO 23096 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Passport -> 
 Passport [number=E1234]
 
-```
+
 
 <p style="color:green">This is the magic of hibernate , without exlicitly specifying it automatically fetched the passport details </p>
 
