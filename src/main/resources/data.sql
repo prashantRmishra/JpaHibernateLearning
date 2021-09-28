@@ -20,4 +20,12 @@ insert into Review(id,rating,description,course_id) values(40004,'****','Good co
 insert into Review(id,rating,description,course_id) values(40002,'*','Shitty course',10002);
 insert into Review(id,rating,description,course_id) values(40003,'**','Not sure what to say about this course',10003);
 
+--student_course
+insert into student_course(student_id,course_id) values(20001,10001);
+insert into student_course(student_id,course_id) values(20002,10001);
+insert into student_course(student_id,course_id) values(20003,10001);
+insert into student_course(student_id,course_id) values(20001,10002);
+insert into student_course(student_id,course_id) values(20002,10003);
+insert into student_course(student_id,course_id) values(20003,10003);
+
 

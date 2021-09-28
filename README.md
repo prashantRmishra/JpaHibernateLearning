@@ -620,7 +620,7 @@ Passport [number=E1235]
 Student [name=Sandeep]
 ```
 
-@OneToMany and @ManyToMany
+@OneToMany 
 ----
 
 **OneToMany** : one ``course`` can have many ``review``'s i.e ``course`` can participate more that once in the relationship, but ``review`` can participate only once. 
@@ -795,6 +795,173 @@ Note : Any relation ending with __ToOne (ManyToOne,OneToOne) is always EAGER FET
 ____
 
 
+@ManyToMany
+----
 
+**ManyToMany**: Many ``student`` can enroll in Many ``course``. Similarly many ``course`` can have many ``student`` <br>
+Here none of the table will be owning, hence join table comes into picture ``course_students(course_id,students_id)`` and  ``student_courses(student_id,courses_id)``
 
-**ManyToMany**: Many ``student`` can enroll in Many ``course``. Similarly many ``course`` can have many ``student``
+Add following to ``Student.java``
+
+```java
+	@ManyToMany
+	private List<Course> courses  = new ArrayList<>();
+	public List<Course> getCourses() {
+		return courses;
+	}
+	public void addCourse(Course c) {
+		 courses.add(c);
+	}
+```
+Add following to ``Course.java``
+
+```java
+	@ManyToMany
+	private List<Student> students  = new ArrayList<>();
+```
+Console output after running the code :
+<br>
+As we can see two tables are created ``course_students`` and ``student_courses`` because we have specifies ``@ManyToMany`` in both the classes.
+
+```log
+Hibernate: create table course_students (course_id bigint not null, students_id bigint not null)
+Hibernate: create table student_courses (student_id bigint not null, courses_id bigint not null)
+Hibernate: alter table course_students add constraint FK532dg5ikp3dvbrbiiqefdoe6m foreign key (students_id) references student
+Hibernate: alter table course_students add constraint FKgut5xj4l8sk6hg3l0t2su2pnc foreign key (course_id) references course
+Hibernate: alter table student_courses add constraint FKlwviiijdg10oc2ui4yl7adh1o foreign key (courses_id) references course
+Hibernate: alter table student_courses add constraint FKiqufqwgb6im4n8xslhjvxmt0n foreign key (student_id) references student
+
+```
+**Fixing two join table problem**
+We can make one of the Entity as the owning side of the relation i.e either student or course it doesn't matter.
+
+Modify ``Course.java`` as 
+
+```java
+@ManyToMany(mappedBy = "courses")
+	private List<Student> students  = new ArrayList<>();
+```
+Now ``Student.java`` is the owning side.
+
+Console Output: 
+
+```log
+Hibernate: create table student_courses (students_id bigint not null, courses_id bigint not null)
+Hibernate: alter table student_courses add constraint FKlwviiijdg10oc2ui4yl7adh1o foreign key (courses_id) references course
+Hibernate: alter table student_courses add constraint FKrgo64lg01pxfwq2x9753jgywc foreign key (students_id) references student
+```
+
+Renaming the names of Join Table and its column from ``student_courses(students_id,courses_id)`` to ``student_course(student_id,course_id)``
+
+On the owning side the relation (``Student.java``) we can add ``@JoinTable`` and ``@JoinColumns`` , ``@InverseJoinColumns``
+
+```java
+	@ManyToMany
+	@JoinTable(name = "student_course",
+	joinColumns = @JoinColumn(name="student_id"), //joinColumn: column name of this table
+	inverseJoinColumns = @JoinColumn(name="course_id")  //inverseJoinColumn: column name of other table (non owning)
+	)
+	private List<Course> courses  = new ArrayList<>();
+```
+Console Output :
+
+ ```log
+Hibernate: create table student_course (student_id bigint not null, course_id bigint not null)
+Hibernate: alter table student_course add constraint FKejrkh4gv8iqgmspsanaji90ws foreign key (course_id) references course
+Hibernate: alter table student_course add constraint FKq7yw2wg9wlt2cnj480hcdn6dq foreign key (student_id) references student
+ ```
+**Retrieving data using JPA relationship**
+
+We know @ManyToMany do lazy fetching hence, below code will lead to Exception
+
+```java
+	@Test
+	void retrieveStudentAndCourse() {
+		Student student = repository.findById(20001L);
+		logger.info("Student with id 20001 -> {}",student);
+		logger.info("Course student 20001 enrolled in -> {}",student.getCourses());
+		
+	}
+```
+Console Output:
+
+```log
+Reported exception:
+org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: com.prashant.jpa.hibernate.JpaHIbernate.entity.Student.courses, could not initialize proxy - no Session
+```
+Hence, Add ``@Transactional`` to ensure Hibernate session is not killed.
+
+```java
+	@Test
+	@Transactional
+	void retrieveStudentAndCourse() {
+		Student student = repository.findById(20001L);
+		logger.info("Student with id 20001 -> {}",student);
+		logger.info("Course student 20001 enrolled in -> {}",student.getCourses());
+		
+	}
+```
+```log
+Hibernate: select student0_.id as id1_3_0_, student0_.name as name2_3_0_, student0_.passport_id as passport3_3_0_ from student student0_ where student0_.id=?
+2021-09-28 18:58:11.070 TRACE 4228 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [20001]
+2021-09-28 18:58:11.084 TRACE 4228 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name2_3_0_] : [VARCHAR]) - [Prashant]
+2021-09-28 18:58:11.085 TRACE 4228 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([passport3_3_0_] : [BIGINT]) - [30001]
+2021-09-28 18:58:11.098 TRACE 4228 --- [           main] org.hibernate.type.CollectionType        : Created collection wrapper: [com.prashant.jpa.hibernate.JpaHIbernate.entity.Student.courses#20001]
+2021-09-28 18:58:11.109  INFO 4228 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Student with id 20001 -> 
+Student [name=Prashant]
+Hibernate: select courses0_.student_id as student_1_4_0_, courses0_.course_id as course_i2_4_0_, course1_.id as id1_0_1_, course1_.created_date as created_2_0_1_, course1_.name as name3_0_1_, course1_.updated_date as updated_4_0_1_ from student_course courses0_ inner join course course1_ on courses0_.course_id=course1_.id where courses0_.student_id=?
+2021-09-28 18:58:11.109  INFO 4228 --- [           main] c.p.j.h.J.r.StudentRepositoryTest        : Course student 20001 enrolled in -> [
+Course [id=10001, name=JPA in 100 steps], 
+Course [id=10002, name=Perseverance]]
+```
+
+Adding new Student and Course having ``@ManyToMany`` relationship with each other.
+
+``StudentRepository.java``
+
+```java
+public void insertStudentAndCourse() {
+		Student student = new Student("Abhmanyu");
+		Course course1 = new Course("ONGC");
+		Course course2 = new Course("BARC");
+		em.persist(course2);
+		em.persist(course1);
+		em.persist(student);
+		course2.addStudent(student);
+		course1.addStudent(student);
+		student.addCourse(course2);
+		student.addCourse(course1);
+		
+		
+	}
+```
+Console-Output:
+
+```log
+Hibernate: insert into course (created_date, name, updated_date, id) values (?, ?, ?, ?)
+2021-09-28 19:30:14.924 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-09-28T19:30:14.918777600]
+2021-09-28 19:30:14.925 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [VARCHAR] - [BARC]
+2021-09-28 19:30:14.926 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [TIMESTAMP] - [2021-09-28T19:30:14.918777600]
+2021-09-28 19:30:14.927 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [BIGINT] - [1]
+Hibernate: insert into course (created_date, name, updated_date, id) values (?, ?, ?, ?)
+2021-09-28 19:30:14.931 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [TIMESTAMP] - [2021-09-28T19:30:14.930779700]
+2021-09-28 19:30:14.931 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [VARCHAR] - [ONGC]
+2021-09-28 19:30:14.931 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [TIMESTAMP] - [2021-09-28T19:30:14.930779700]
+2021-09-28 19:30:14.932 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [4] as [BIGINT] - [2]
+Hibernate: insert into student (name, passport_id, id) values (?, ?, ?)
+2021-09-28 19:30:14.932 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [VARCHAR] - [Abhmanyu]
+2021-09-28 19:30:14.933 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [null]
+2021-09-28 19:30:14.933 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [3] as [BIGINT] - [3]
+Hibernate: insert into student_course (student_id, course_id) values (?, ?)
+2021-09-28 19:30:14.941 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
+2021-09-28 19:30:14.942 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [1]
+Hibernate: insert into student_course (student_id, course_id) values (?, ?)
+2021-09-28 19:30:14.943 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [3]
+2021-09-28 19:30:14.943 TRACE 2296 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [2] as [BIGINT] - [2]
+
+```
+
+h2-Console :
+
+<img src = "src/main/resources/static/images/student-course-many-to-many-jpahibernate.PNG" width="800" height="400">
+

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -29,6 +30,15 @@ public class Course {
 	@OneToMany(mappedBy = "course") /// As this Course obj could have many review
 	List<Review> reviews = new ArrayList<>();
 	
+	@ManyToMany(mappedBy = "courses")
+	private List<Student> students  = new ArrayList<>();
+	
+	public List<Student> getStudent() {
+		return this.students;
+	}
+	public void addStudent(Student student) {
+		this.students.add(student);
+	}
 	public List<Review> getReviews() {
 		return reviews;
 	}
