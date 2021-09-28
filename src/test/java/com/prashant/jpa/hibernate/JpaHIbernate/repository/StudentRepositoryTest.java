@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import com.prashant.jpa.hibernate.JpaHIbernate.JpaHibernateApplication;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Passport;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Student;
@@ -19,7 +20,7 @@ class StudentRepositoryTest {
 
 	@Autowired
 	StudentRepository repository;
-	
+
 	@Autowired
 	EntityManager entityManager;
 
@@ -61,5 +62,6 @@ class StudentRepositoryTest {
 		logger.info("Passport -> {}",passport);
 		logger.info("Student -> {}",passport.getStudent());
 	}
+	
 	
 }

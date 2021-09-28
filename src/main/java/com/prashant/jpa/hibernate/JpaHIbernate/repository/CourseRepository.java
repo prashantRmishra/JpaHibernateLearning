@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
 
 @Repository
 @Transactional
@@ -70,6 +71,79 @@ public class CourseRepository {
 		Course course2  = findById(course1.getId());
 		course2.setName("WebServices-Updated");
 		
+	}
+	
+	public void addReviewForCOurse() {
+	
+		//1.find course whose review is to be given
+		Course course = findById(10002L);
+		
+		//Review given to that course
+		logger.info("List of Reviews -> {}",course.getReviews());
+		
+		//2.create two more reviews
+		Review review1 = new Review("****", "Its a very good course");
+		Review review2 = new Review("***","Its all course");
+		
+		//3.Setting the Relationship
+		//assign review1 to course that has id 10002
+		course.addReviews(review1);
+		/* We have to assign review to course as well 
+		 * because of bidirectional relationship oneToMany (course->review)
+		 * manyToOne (review->course)
+		 * Owning side is review
+		 * */
+		
+		//assign review a course   
+		review1.setCourse(course);
+		
+		//repeating the same what we did above
+		course.addReviews(review2);
+		review2.setCourse(course);
+		
+		//persist review 
+		/*We don't need to persist course as we are not changing anything in it
+		 * we just need to persist the review1, review2 */
+		em.persist(review1);
+		em.persist(review2);
+		
+		
+	}
+	
+	/*Generalization of add review for course*/
+	public void addReviewForCOurse(Long courseId,List<Review> reviews) {
+
+		
+		//1.find course whose review is to be given
+		Course course = findById(courseId);
+		
+		//Review given to that course
+		logger.info("List of Reviews for course id "+courseId+" -> {}",course.getReviews());
+		
+		
+		//2.Setting the Relationship
+		//assign reviews to course that has courseId
+		for(Review review : reviews) {
+			
+			course.addReviews(review);
+			
+			/* We have to assign review to course as well 
+			 * because of bidirectional relationship oneToMany (course->review)
+			 * manyToOne (review->course)
+			 * Owning side is review
+			 * */
+			
+			//3.assign  review a course
+			review.setCourse(course);
+			
+			//4.persist review
+			em.persist(review);
+			
+			//persist review 
+			/*We don't need to persist course as we are not changing anything in it
+			 * we just need to persist the review */
+		}		
+	
 	}
 	
 }

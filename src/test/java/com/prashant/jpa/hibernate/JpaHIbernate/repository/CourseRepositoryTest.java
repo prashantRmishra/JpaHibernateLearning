@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
@@ -16,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.JpaHibernateApplication;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
 
 //@ExtendWith(SpringExtension.class) // in Junit5 and @RunWith(SpringRunner.class) 
 //with junit4 for AutoWiring
@@ -26,6 +30,9 @@ class CourseRepositoryTest {
 
 	@Autowired
 	CourseRepository repository;
+	
+	@Autowired
+	EntityManager em;
 
 	@Test
 	void findById() {
@@ -60,5 +67,24 @@ class CourseRepositoryTest {
 	void playWithEntityManager() {
 		repository.playWithEntityManager();
 	}
+	
+	@Test
+	@Transactional
+	void retrieveReviewsForCourse() {
+		Course c  = repository.findById(10003L);
+		logger.info("Reviews for the course id 10003 -> {}",c.getReviews());
+		
+	}
+	
+	@Test
+	@Transactional
+	void retieveCourceForReview() {
+		//1.fetching review
+		Review r = em.find(Review.class, 40004L);
+		//2.eager fetching of courses
+		logger.info("The courses for the given review are ->{} ",r.getCourse());
+	}
+	
+	
 
 }

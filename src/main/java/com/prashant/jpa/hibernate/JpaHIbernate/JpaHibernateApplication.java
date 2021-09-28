@@ -1,5 +1,8 @@
 package com.prashant.jpa.hibernate.JpaHIbernate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.CourseRepository;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.StudentRepository;
 
@@ -37,6 +40,15 @@ public class JpaHibernateApplication implements CommandLineRunner {
 		
 		//logger.info("All Students are-> {}",studentRepository.findAll());
 		//studentRepository.saveStudentWithPassport();
+		//-----------------------------------------------------------------------
+		
+		//repo.addReviewForCOurse();
+		Long courseId = 10003L;
+		List<Review> reviews = new ArrayList<>();
+		Review review  = new Review("****","Its a funny course");
+		reviews.add(review);
+		//repo.addReviewForCOurse(courseId, reviews);
+		
 		
 	}
 

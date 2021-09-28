@@ -480,7 +480,7 @@ Lazy Fetch
 ----
 If I had written only ``logger.info("Student -> {}",student);`` in above test , still passport details would have been fetched, For large scaple application it would result in performance issues. To avoid this ``Lasy fetch`` is used. <br>
 
-**For Lazy fetching specify ** ``type`` in ``@OneToOne`` annotation in ``Student.java``.
+**For Lazy fetching specify**``type`` in ``@OneToOne`` annotation in ``Student.java``.
 
 ```java
 	@Entity
@@ -532,7 +532,7 @@ Transaction, Entity Manager and Persistence Contest
 Once you define transaction (by specifying ``@Transactional``) you would also be creating something called **Persistence Context **, Persistence Contest is a place where all entities you are operating are stored.<br>
 
 
-**The way we interact with ** ``Persistence Context`` **is by using** ``EntityManager``
+**The way we interact with**``Persistence Context`` **is by using** ``EntityManager``
 
 
 ```java
@@ -568,7 +568,7 @@ OneToOne mapping Bidirectional Relationship
 ----
 Till now the relationship between ``student`` and ``passport`` was **Unidirectional** ``oneToOne`` i.e we can fetch ``passport`` details while fetching ``student`` details. But if we want to fetch ``student`` details while fetching ``passport`` details the relationship has to be **Bidirectional** <br>
 
-**We can achieve Bidirectional OneToOne Relationship by adding ** ``Student`` property to ``Passport.java``
+**We can achieve Bidirectional OneToOne Relationship by adding**``Student`` property to ``Passport.java``
 
 ```java
 
@@ -623,8 +623,8 @@ Student [name=Sandeep]
 @OneToMany and @ManyToMany
 ----
 
-**OneToMany** : one ``course`` can have many ``review``'s i.e ``course`` can participate more that once in the relationship, bit ``review`` can participate only once. 
-so , ``review`` is associated with ``course``, and without ``course`` , ``review`` does not make any sense. <br>
+**OneToMany** : one ``course`` can have many ``review``'s i.e ``course`` can participate more that once in the relationship, but ``review`` can participate only once. 
+So , ``review`` is associated with ``course``, and without ``course`` , ``review`` does not make any sense. <br>
 
 Modify ``Review.java`` like following code : <br>
 
@@ -644,11 +644,10 @@ public class Review {
 	}
 ```
 
-**NOTE:** In course_review(oneToMany) table primary_key will be review(id) as it will be unique. You know this.
+**NOTE:** In course_review(oneToMany) relationship primary_key will be review(id) as it will be unique. You know this.
 
 Example, No one ``review`` id can belong to two different ``course``.
 
-**ManyToMany**: Many ``student`` can enroll in Many ``course``. Similarly many ``course`` can have many ``student``
 
 Modify ``Course.java`` like following code : <br>
 
@@ -683,14 +682,119 @@ public class Course {
 	}
 	
 ```
-**As** ``review`` **is the owning side of the relationship. Hence, ** ``mappedBy`` **will be put in non-owning side ** ``course`` <br>
+**As** ``review`` **is the owning side of the relationship. Hence,**``mappedBy`` **will be put in non-owning side**``course`` <br>
+
+**Adding new reviews to course**
+
+```java
+
+public void addReviewForCOurse() {
 	
-
-
+		//1.find course whose review is to be given
+		Course course = findById(10002L);
+		
+		//Review given to that course
+		logger.info("List of Reviews -> {}",course.getReviews());
+		
+		//2.create two more reviews
+		Review review1 = new Review("****", "Its a very good course");
+		Review review2 = new Review("***","Its all course");
+		
+		//3.Setting the Relationship
+		//assign review1 to course that has id 10002
+		course.addReviews(review1);
+		/* We have to assign review to course as well 
+		 * because of bidirectional relationship oneToMany (course->review)
+		 * manyToOne (review->course)
+		 * Owning side is review
+		 * */
+		
+		//assign course a review 
+		review1.setCourse(course);
+		
+		//repeating the same what we did above
+		course.addReviews(review2);
+		review2.setCourse(course);
+		
+		//persist review 
+		/*We don't need to persist course as we are not changing anything in it
+		 * we just need to persist the review1, review2 */
+		em.persist(review1);
+		em.persist(review2);
+		
+		
+	}
 	
-	 
+```
+Finally call ``addReviewForCOurse();`` from main file to see the changes in Review table <br>
+
+You can generalize the method ``addReviewForCOurse()`` by overloading it with parameters as ``addReviewForCOurse(Long courseId, List<Review> reviews)``, you can see its implementation in ``CourseRepository.java``. <br>
+____
+
+**Remember by default on @OneToMany side (course) fetching is** _ LAZY _ **and on @ManyToOne side(review) fetching is** _ EAGER_ .<br>
+
+As you can see:
+
+``@OneToMany`` (``course``): <br>
+
+```java
+	@Test
+	@Transactional
+	void retrieveReviewsForCourse() {
+		Course c  = repository.findById(10003L);
+		logger.info("Reviews for the course id 10003",c.getReviews());
+		
+	}
+```
+Console Output : 
+<br> As we can see ``c.getReview()`` from test is not fetched directly i.e select query is run then ``c.getReview()`` returned review , Hence ``@OneToMany`` by default uses _ LAZY_ fetching <br>
+
+```log
+Hibernate: select course0_.id as id1_0_0_, course0_.created_date as created_2_0_0_, course0_.name as name3_0_0_, course0_.updated_date as updated_4_0_0_ from course course0_ where course0_.id=?
+2021-09-28 08:36:28.031 TRACE 19212 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [10003]
+2021-09-28 08:36:28.047 TRACE 19212 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_0_0_] : [TIMESTAMP]) - [2021-09-28T00:00]
+2021-09-28 08:36:28.048 TRACE 19212 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name3_0_0_] : [VARCHAR]) - [is the key]
+2021-09-28 08:36:28.049 TRACE 19212 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([updated_4_0_0_] : [TIMESTAMP]) - [2021-09-28T00:00]
+2021-09-28 08:36:28.080 TRACE 19212 --- [           main] org.hibernate.type.CollectionType        : Created collection wrapper: [com.prashant.jpa.hibernate.JpaHIbernate.entity.Course.reviews#10003]
+Hibernate: select reviews0_.course_id as course_i4_2_0_, reviews0_.id as id1_2_0_, reviews0_.id as id1_2_1_, reviews0_.course_id as course_i4_2_1_, reviews0_.description as descript2_2_1_, reviews0_.rating as rating3_2_1_ from review reviews0_ where reviews0_.course_id=?
+2021-09-28 08:36:28.089  INFO 19212 --- [           main] c.p.j.h.J.r.CourseRepositoryTest         : Reviews for the course id 10003 -> [Review[**,Not sure what to say about this course]]
+```
+``@ManyToOne`` (``Review``): <br>
+
+```java
+	@Test
+	@Transactional
+	void retieveCourceForReview() {
+		//1.fetching review
+		Review r = em.find(Review.class, 40004L);
+		//2.eager fetching of courses
+		logger.info("The courses for the given review are ->{} ",r.getCourse());
+	}
+```
+Console Output: 
+<br>
+As we can see the Courses are fetched without running select query , this is because courses were EAGER fetched by review <br>
+
+```log
+Hibernate: select review0_.id as id1_2_0_, review0_.course_id as course_i4_2_0_, review0_.description as descript2_2_0_, review0_.rating as rating3_2_0_, course1_.id as id1_0_1_, course1_.created_date as created_2_0_1_, course1_.name as name3_0_1_, course1_.updated_date as updated_4_0_1_ from review review0_ left outer join course course1_ on review0_.course_id=course1_.id where review0_.id=?
+2021-09-28 08:40:03.703 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [40004]
+2021-09-28 08:40:03.712 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([id1_0_1_] : [BIGINT]) - [10001]
+2021-09-28 08:40:03.720 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([course_i4_2_0_] : [BIGINT]) - [10001]
+2021-09-28 08:40:03.722 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([descript2_2_0_] : [VARCHAR]) - [Good course]
+2021-09-28 08:40:03.722 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([rating3_2_0_] : [VARCHAR]) - [****]
+2021-09-28 08:40:03.727 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([created_2_0_1_] : [TIMESTAMP]) - [2021-09-28T00:00]
+2021-09-28 08:40:03.727 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name3_0_1_] : [VARCHAR]) - [JPA in 100 steps]
+2021-09-28 08:40:03.728 TRACE 22496 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([updated_4_0_1_] : [TIMESTAMP]) - [2021-09-28T00:00]
+2021-09-28 08:40:03.747 TRACE 22496 --- [           main] org.hibernate.type.CollectionType        : Created collection wrapper: [com.prashant.jpa.hibernate.JpaHIbernate.entity.Course.reviews#10001]
+2021-09-28 08:40:03.750  INFO 22496 --- [           main] c.p.j.h.J.r.CourseRepositoryTest         : The courses for the given review are ->
+Course [id=10001, name=JPA in 100 steps] 
+```
+
+Note : Any relation ending with __ToOne (ManyToOne,OneToOne) is always EAGER FETCHING and RElation ending with __ToMany (ManyToMany,OneToMany) is always LAZY FETCHING.
+----
+____
 
 
-	
 
 
+**ManyToMany**: Many ``student`` can enroll in Many ``course``. Similarly many ``course`` can have many ``student``

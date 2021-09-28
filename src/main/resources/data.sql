@@ -16,6 +16,7 @@ insert into Student(id,name,passport_id) values(20003,'Ajay',30003);
 
 --Review
 insert into Review(id,rating,description,course_id) values(40001,'****','Good course',10001);
+insert into Review(id,rating,description,course_id) values(40004,'****','Good course',10001);
 insert into Review(id,rating,description,course_id) values(40002,'*','Shitty course',10002);
 insert into Review(id,rating,description,course_id) values(40003,'**','Not sure what to say about this course',10003);
 
