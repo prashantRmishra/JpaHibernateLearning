@@ -1010,3 +1010,5 @@ insert into Review(id,rating,description,course_id,student_id) values(40003,'**'
 H2-console:
 
 <img  src="src/main/resources/static/images/student-review-onttomany.PNG" width="800" heigth="500">
+
+## [JPA Inheritance Hierarchies and Mapping](https://github.com/prashantRmishra/JpaHibernateLearning/blob/jpa-hibernate-in-depth/JpaIngeritanceHirarchyAndMapping.md "JPA Inheritance Hierach and Mapping")
