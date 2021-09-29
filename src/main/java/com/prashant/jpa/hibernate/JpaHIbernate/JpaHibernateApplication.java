@@ -53,7 +53,8 @@ public class JpaHibernateApplication implements CommandLineRunner {
 		//----------------------------------------------------------------------
 		
 		//studentRepository.insertStudentAndCourseHardCoded();
-		studentRepository.insertStudentAndCourse(new Student("Ranganathan"),new Course("Republic TV"));
+		//studentRepository.insertStudentAndCourse(new Student("Ranganathan"),new Course("Republic TV"));
+		//-----------------------------------------------------------------------
 		
 		
 	}

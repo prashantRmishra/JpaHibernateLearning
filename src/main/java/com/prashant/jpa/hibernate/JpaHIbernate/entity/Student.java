@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 
@@ -35,6 +36,17 @@ public class Student {
 	inverseJoinColumns = @JoinColumn(name="course_id")  //inverseJoinColumn: column name of other table (non owning)
 	)
 	private List<Course> courses  = new ArrayList<>();
+	
+	
+	@OneToMany (mappedBy = "student") // as this student can give many reviews
+	private List<Review> reviews= new ArrayList<>();
+	
+	private void addReview(Review review) {
+		this.reviews.add(review);
+	}
+	private List<Review> getReviews(){
+		return this.reviews;
+	}
 	
 	public List<Course> getCourses() {
 		return courses;

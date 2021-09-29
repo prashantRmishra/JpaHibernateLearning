@@ -965,3 +965,48 @@ h2-Console :
 
 <img src = "src/main/resources/static/images/student-course-many-to-many-jpahibernate.PNG" width="800" height="400">
 
+Practice Example :
+One Student can give many review so ``student`` and ``review`` are in ``@OneToMany`` relationship with each other.
+
+So, ``review`` will owning side.
+
+``Review.java``
+
+```java
+
+	@ManyToOne  /// As Many can be given by one student
+	private Student student;
+	
+	public Student getStudent() {
+		return student;
+	}
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
+``Student.java``
+
+```java
+@OneToMany (mappedBy = "student") // as this student can give many reviews
+	private List<Review> reviews= new ArrayList<>();
+	
+	private void addReview(Review review) {
+		this.reviews.add(review);
+	}
+	private List<Review> getReviews(){
+		return this.reviews;
+	}
+```
+
+``data.sql``
+
+```sql
+--Review
+insert into Review(id,rating,description,course_id,student_id) values(40001,'****','Good course',10001,20001);
+insert into Review(id,rating,description,course_id,student_id) values(40004,'****','Good course',10001,20001);
+insert into Review(id,rating,description,course_id,student_id) values(40002,'*','Shitty course',10002,20003);
+insert into Review(id,rating,description,course_id,student_id) values(40003,'**','Not sure what to say about this course',10003,20001);
+```
+H2-console:
+
+<img  src="src/main/resources/static/images/student-review-onttomany.PNG" width="800" heigth="500">

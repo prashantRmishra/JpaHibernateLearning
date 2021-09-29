@@ -15,10 +15,10 @@ insert into Student(id,name,passport_id) values(20002,'Sandeep',30002);
 insert into Student(id,name,passport_id) values(20003,'Ajay',30003);
 
 --Review
-insert into Review(id,rating,description,course_id) values(40001,'****','Good course',10001);
-insert into Review(id,rating,description,course_id) values(40004,'****','Good course',10001);
-insert into Review(id,rating,description,course_id) values(40002,'*','Shitty course',10002);
-insert into Review(id,rating,description,course_id) values(40003,'**','Not sure what to say about this course',10003);
+insert into Review(id,rating,description,course_id,student_id) values(40001,'****','Good course',10001,20001);
+insert into Review(id,rating,description,course_id,student_id) values(40004,'****','Good course',10001,20001);
+insert into Review(id,rating,description,course_id,student_id) values(40002,'*','Shitty course',10002,20003);
+insert into Review(id,rating,description,course_id,student_id) values(40003,'**','Not sure what to say about this course',10003,20001);
 
 --student_course
 insert into student_course(student_id,course_id) values(20001,10001);

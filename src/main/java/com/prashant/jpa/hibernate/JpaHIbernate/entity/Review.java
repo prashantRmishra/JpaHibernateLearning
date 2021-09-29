@@ -21,6 +21,15 @@ public class Review {
 	@ManyToOne  /// as many review Obj could be associated to only one course
 	private Course course; 
 	
+	@ManyToOne  /// As Many can be given by one student
+	private Student student;
+	
+	public Student getStudent() {
+		return student;
+	}
+	public void setStudent(Student student) {
+		this.student = student;
+	}
 	public Course getCourse() {
 		return course;
 	}
