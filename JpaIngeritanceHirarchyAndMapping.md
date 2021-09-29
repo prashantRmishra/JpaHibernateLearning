@@ -154,4 +154,31 @@ But the problem with above approach is common column are repeated in both the ta
 
 As we can see common columns are put into single parent table ``employee``.
 
+4 Use ``@MappedSuperClass`` annotation, by this separate ``full_time_employee`` and ``part_time_employee`` table will be created. No ``Employee`` table will be created , ``Employee`` will act as a class whose properties are shared by ``PartTimeEmployee`` and ``FullTimeEmployee``
+
+Note : if using ``@MappedSuperClass`` ,then ``@Entity`` can't be used. 
+
+_To read more about @MappedSuperClass , just click on it :)_
+
+Declarations:
+
+``Employee.java``
+
+```java
+@MappedSuperclass
+@DiscriminatorColumn(name = "EmployeeType")
+public abstract class Employee {...}
+```
+Add following to your ``EmployeeRepository.java`` and delete or comment ``findAllEmployee()`` method.
+
+```java
+public List<PartTimeEmployee> findAllPartTimeEmployees(){
+		return em.createQuery("select e from PartTimeEmployee e",PartTimeEmployee.class).getResultList();
+	}
+	public List<FullTimeEmployee> findAllFullTimeEmployees(){
+		return em.createQuery("select e from FullTimeEmployee e",FullTimeEmployee.class).getResultList();
+	}
+```
+
+Call above methods from ``JpaHibernateApplicaiton.java``'s ``run()`` method to see the changes.
 

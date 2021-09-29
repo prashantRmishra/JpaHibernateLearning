@@ -1,18 +1,24 @@
 --Course
 insert into Course(id,name,created_date,updated_date) values(10001,'JPA in 100 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10002,'Perseverance',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10003,'is the key',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10004,'to success',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10002,'Perseverance in 20 steps',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10003,'Angular in 10 steps',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10004,'Springboot in 90 steps',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10000,'React in 60 steps',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10005,'Mahabharat in lifetime',sysdate(),sysdate());
 
 --Passport
-insert into Passport(id,number) values(30001,'E1234');
-insert into Passport(id,number) values(30002,'E1235');
-insert into passport(id,number) values(30003,'E1236');
+insert into Passport(id,number) values(30001,'E14574');
+insert into Passport(id,number) values(30002,'E125335');
+insert into passport(id,number) values(30003,'E12378');
+insert into passport(id,number) values(30004,'E1234566');
+insert into passport(id,number) values(30005,'E12756');
 
 --Student
 insert into Student(id,name,passport_id) values(20001,'Prashant',30001);
 insert into Student(id,name,passport_id) values(20002,'Sandeep',30002);
 insert into Student(id,name,passport_id) values(20003,'Ajay',30003);
+insert into Student(id,name,passport_id) values(20004,'Chad',30004);
+insert into Student(id,name,passport_id) values(20005,'Manish',30005);
 
 --Review
 insert into Review(id,rating,description,course_id,student_id) values(40001,'****','Good course',10001,20001);
