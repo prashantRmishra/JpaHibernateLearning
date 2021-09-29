@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Passport;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Student;
 
 @Repository
@@ -77,6 +78,28 @@ public class StudentRepository {
 		c.addStudent(student);
 		em.persist(student);
 		em.persist(c);
+	}
+	
+	/*Student adding reviews*/
+	public void addStudentReviewsHardCoded() {
+		//Remember the owning side is review (one student many reviews)
+		Review review =  new Review("*****", "Man! what a couese it is !");
+		em.persist(review);
+		Student student = new Student("Dwight shroot");
+		student.addReview(review);
+		review.setStudent(student);
+		em.persist(student);
+		Passport passport = new Passport("EM23223");
+		em.persist(passport);
+		passport.setStudent(student);
+		student.setPassport(passport);
+		Course course  = new Course("this is a new course");
+		em.persist(course);
+		course.addStudent(student);
+		student.addCourse(course);
+		review.setCourse(course);
+		course.addReviews(review);
+		
 	}
 	
 	

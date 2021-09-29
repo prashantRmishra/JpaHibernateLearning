@@ -1,5 +1,6 @@
 package com.prashant.jpa.hibernate.JpaHIbernate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +11,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.FullTimeEmployee;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.PartTimeEmployee;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
-import com.prashant.jpa.hibernate.JpaHIbernate.entity.Student;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.CourseRepository;
+import com.prashant.jpa.hibernate.JpaHIbernate.repository.EmployeeRepository;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.StudentRepository;
 
 @SpringBootApplication
@@ -22,6 +24,8 @@ public class JpaHibernateApplication implements CommandLineRunner {
 
 	@Autowired
 	CourseRepository repo;
+	@Autowired
+	EmployeeRepository employeeRepository;
 	@Autowired
 	StudentRepository studentRepository;
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -55,6 +59,11 @@ public class JpaHibernateApplication implements CommandLineRunner {
 		//studentRepository.insertStudentAndCourseHardCoded();
 		//studentRepository.insertStudentAndCourse(new Student("Ranganathan"),new Course("Republic TV"));
 		//-----------------------------------------------------------------------
+		//studentRepository.addStudentReviewsHardCoded();
+		//----------------------------------------------------------------------
+		employeeRepository.insert(new PartTimeEmployee("Chadvick Boseman", new BigDecimal(50)));
+		employeeRepository.insert(new FullTimeEmployee("Chris Evans", new BigDecimal(500000)));
+		logger.info("All the Employees are -> {}",employeeRepository.findAllEmployees());
 		
 		
 	}

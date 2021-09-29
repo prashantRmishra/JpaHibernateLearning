@@ -41,10 +41,10 @@ public class Student {
 	@OneToMany (mappedBy = "student") // as this student can give many reviews
 	private List<Review> reviews= new ArrayList<>();
 	
-	private void addReview(Review review) {
+	public void addReview(Review review) {
 		this.reviews.add(review);
 	}
-	private List<Review> getReviews(){
+	public List<Review> getReviews(){
 		return this.reviews;
 	}
 	
