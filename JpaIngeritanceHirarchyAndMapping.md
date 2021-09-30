@@ -182,3 +182,11 @@ public List<PartTimeEmployee> findAllPartTimeEmployees(){
 
 Call above methods from ``JpaHibernateApplicaiton.java``'s ``run()`` method to see the changes.
 
+____
+
+JPQL Queries
+----
+``where``, ``join``, ``like`` queries with all different scenarios are written in 
+
+[JPQLTest.java](https://github.com/prashantRmishra/JpaHibernateLearning/blob/jpa-hibernate-in-depth/src/test/java/com/prashant/jpa/hibernate/JpaHIbernate/repository/JpqlTest.java)
+

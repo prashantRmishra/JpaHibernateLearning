@@ -90,5 +90,33 @@ class JpqlTest {
 		// passport is the variable instance of Passport in Student class
 		logger.info("Student having passport number of the form %23% are -> {}", query.getResultList());
 	}
-
+	
+	/*JOins using JPQL*/
+	
+	
+	//join
+	@Test
+	public void join() {
+		Query query = manager.createQuery("select s,c from Student s join s.courses c");
+		List<Object[]> list = query.getResultList();
+		//Object[0]: Student
+		//Object[1]: Course
+		logger.info("Result SIze - >{}",list.size());
+		for(Object[] result: list) {
+			logger.info("Students -> {}  Courses -> {}",result[0],result[1]);
+		}
+	}
+	
+	//left join (students not in any courses)
+	@Test
+	public void leftJoin() {
+		Query query = manager.createQuery("select s,c from Student s left join s.courses c");
+		List<Object[]> list = query.getResultList();
+		//Object[0]: Student
+		//Object[1]: Course
+		logger.info("Result SIze - >{}",list.size());
+		for(Object[] result: list) {
+			logger.info("Students -> {}  Courses -> {}",result[0],result[1]);
+		}
+	}
 }
