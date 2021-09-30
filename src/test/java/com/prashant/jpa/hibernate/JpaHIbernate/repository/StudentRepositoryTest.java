@@ -1,13 +1,13 @@
 package com.prashant.jpa.hibernate.JpaHIbernate.repository;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.JpaHibernateApplication;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Passport;

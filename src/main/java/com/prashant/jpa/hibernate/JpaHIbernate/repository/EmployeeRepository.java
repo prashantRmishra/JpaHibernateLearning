@@ -3,12 +3,13 @@ package com.prashant.jpa.hibernate.JpaHIbernate.repository;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Employee;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.FullTimeEmployee;

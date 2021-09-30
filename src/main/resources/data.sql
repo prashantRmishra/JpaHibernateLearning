@@ -5,6 +5,9 @@ insert into Course(id,name,created_date,updated_date) values(10003,'Angular in 1
 insert into Course(id,name,created_date,updated_date) values(10004,'Springboot in 90 steps',sysdate(),sysdate());
 insert into Course(id,name,created_date,updated_date) values(10000,'React in 60 steps',sysdate(),sysdate());
 insert into Course(id,name,created_date,updated_date) values(10005,'Mahabharat in lifetime',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10006,'.Net in 50 steps',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10007,'Javascript in 70 steps',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date) values(10008,'Full stack dweveloper in 100 steps',sysdate(),sysdate());
 
 --Passport
 insert into Passport(id,number) values(30001,'E14574');
