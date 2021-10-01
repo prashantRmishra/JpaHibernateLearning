@@ -15,6 +15,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 
@@ -28,6 +30,7 @@ public class Student {
 	private String name;
 	
 	@OneToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Passport passport;
 	
 	@ManyToMany
@@ -35,10 +38,12 @@ public class Student {
 	joinColumns = @JoinColumn(name="student_id"), //joinColumn: column name of this table
 	inverseJoinColumns = @JoinColumn(name="course_id")  //inverseJoinColumn: column name of other table (non owning)
 	)
+	@JsonIgnore
 	private List<Course> courses  = new ArrayList<>();
 	
 	
 	@OneToMany (mappedBy = "student") // as this student can give many reviews
+	@JsonIgnore
 	private List<Review> reviews= new ArrayList<>();
 	
 	public void addReview(Review review) {

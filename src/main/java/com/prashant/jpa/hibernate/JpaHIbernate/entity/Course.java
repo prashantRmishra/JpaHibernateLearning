@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @NamedQuery(name = "find_all_courses", query = "select c from Course c")
 public class Course {
@@ -28,9 +30,12 @@ public class Course {
 	private LocalDateTime createdDate;
 	
 	@OneToMany(mappedBy = "course") /// As this Course obj could have many review
+	//@JsonIgnore
 	List<Review> reviews = new ArrayList<>();
 	
+	
 	@ManyToMany(mappedBy = "courses")
+	//@JsonIgnore
 	private List<Student> students  = new ArrayList<>();
 	
 	public List<Student> getStudent() {

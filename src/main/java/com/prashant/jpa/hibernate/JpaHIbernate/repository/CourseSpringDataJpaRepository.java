@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
 
+@RepositoryRestResource(path="courses")
 public interface CourseSpringDataJpaRepository extends JpaRepository<Course, Long> {
 
 	

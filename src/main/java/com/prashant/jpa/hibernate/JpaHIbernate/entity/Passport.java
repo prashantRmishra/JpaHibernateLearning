@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class Passport {
@@ -17,6 +19,7 @@ public class Passport {
 	private String number;
 	
 	@OneToOne(fetch = FetchType.LAZY,mappedBy = "passport")
+	@JsonIgnore
 	private Student student;
 	
 	public Student getStudent() {

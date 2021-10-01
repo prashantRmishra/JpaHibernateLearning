@@ -173,6 +173,39 @@ Test it using following methods in ``CourseSpringDataRepository.java``
 	}
 	
 ```
+Spring Data REST
+---
+We created Spring data JPA by extending ``JpaRepository`` in our ``CourseSpringDataREpository.java`` .
+
+If we want JpaRepository to be exposed to REST endpoints we can use **Spring Data REST**
+
+1 Add following dependencies to your ``pom.xml``
+
+```xml
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+```
+2 Make ``CourseSpringDataRepository.java`` a Spring data rest repository by adding annotation 
+
+```java
+@RepositoryRestResource(path="courses")
+public interface CourseSpringDataJpaRepository extends JpaRepository<Course, Long> {...}
+```
+
+ So ``CourseSpringDataRepository`` is exposed at ``"/courses"`` URI.
+
+**If we access the** ``course`` **resource at** ``http://localhost:8080/courses`` **we we get infinite JSON response as , course has students , students have reviews, review has students and courses and .....loop :)**
+
+<img src ="src/main/resources/static/images/loop.PNG" width="800" heigth="600">
+
+We can avoid this by using ``@JsonIgnore`` annotation on ``students`` field in ``Course.java`` , If you want you can use it to some other fields as well like ``reviews``
+
+[Introduction to Caching]()
+---
+
+
 
 
 
