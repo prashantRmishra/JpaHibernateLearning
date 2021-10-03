@@ -202,7 +202,9 @@ public interface CourseSpringDataJpaRepository extends JpaRepository<Course, Lon
 
 We can avoid this by using ``@JsonIgnore`` annotation on ``students`` field in ``Course.java`` , If you want you can use it to some other fields as well like ``reviews``
 
-[Introduction to Caching]()
+****
+
+[Introduction to Caching](https://github.com/prashantRmishra/JpaHibernateLearning/blob/jpa-hibernate-in-depth/IntoductionToCaching.md)
 ---
 
 

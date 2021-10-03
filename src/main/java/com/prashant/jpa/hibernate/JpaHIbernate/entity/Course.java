@@ -10,15 +10,23 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @NamedQuery(name = "find_all_courses", query = "select c from Course c")
+@SQLDelete(sql = "update course set is_deleted =true where id=?")
+@Where(clause = "is_deleted=false")
 public class Course {
+	private static Logger LOGGER = LoggerFactory.getLogger(Course.class);
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -33,10 +41,18 @@ public class Course {
 	//@JsonIgnore
 	List<Review> reviews = new ArrayList<>();
 	
+	private boolean isDeleted;
 	
 	@ManyToMany(mappedBy = "courses")
 	//@JsonIgnore
 	private List<Student> students  = new ArrayList<>();
+	
+	@PreRemove
+	void beforeRemove() {
+		
+		LOGGER.info("isDelete is being set to true");
+		this.isDeleted=true;
+	}
 	
 	public List<Student> getStudent() {
 		return this.students;

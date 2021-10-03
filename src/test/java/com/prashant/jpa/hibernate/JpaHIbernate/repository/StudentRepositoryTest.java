@@ -72,5 +72,14 @@ class StudentRepositoryTest {
 		
 	}
 	
+	/*Inserting Address directly to the student table*/
+	@Test
+	@Transactional
+	void insertAddressIntoStudent() {
+		Student student = entityManager.find(Student.class, 20001L);
+		logger.info("Student -> {}",student);
+		logger.info("Passport -> {}",student.getPassport());
+	}
+	
 	
 }

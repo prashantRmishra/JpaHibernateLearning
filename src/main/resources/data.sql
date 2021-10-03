@@ -1,13 +1,13 @@
 --Course
-insert into Course(id,name,created_date,updated_date) values(10001,'JPA in 100 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10002,'Perseverance in 20 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10003,'Angular in 10 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10004,'Springboot in 90 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10000,'React in 60 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10005,'Mahabharat in lifetime',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10006,'.Net in 50 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10007,'Javascript in 70 steps',sysdate(),sysdate());
-insert into Course(id,name,created_date,updated_date) values(10008,'Full stack dweveloper in 100 steps',sysdate(),sysdate());
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10001,'JPA in 100 steps',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10002,'Perseverance in 20 steps',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10003,'Angular in 10 steps',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10004,'Springboot in 90 steps',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10000,'React in 60 steps',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10005,'Mahabharat in lifetime',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10006,'.Net in 50 steps',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10007,'Javascript in 70 steps',sysdate(),sysdate(),false);
+insert into Course(id,name,created_date,updated_date,is_deleted) values(10008,'Full stack dweveloper in 100 steps',sysdate(),sysdate(),false);
 
 --Passport
 insert into Passport(id,number) values(30001,'E14574');

@@ -39,14 +39,27 @@ class CourseRepositoryTest {
 	void findById() {
 		Course course = repository.findById(10002L);
 		logger.info("test response is for name :"+course.getName());
-		assertEquals("Perseverance",course.getName());
+		assertEquals("Perseverance in 20 steps",course.getName());
 	}
+	
+	@Test
+	@Transactional
+	void findById_FirstLevelCache() {
+		Course course = repository.findById(10002L);
+		logger.info("First Course Retrieved {} :",course);
+		Course course1 = repository.findById(10002L);
+		logger.info("Second Course Retrieved {} :",course1);
+	
+		assertEquals("Perseverance in 20 steps",course.getName());
+		assertEquals("Perseverance in 20 steps",course1.getName());
+	}
+	
 	@Test
 	@DirtiesContext
 	void deleteCourse(){
 		try {
-			repository.delete(10002L);
-			assertNull(repository.findById(10002L));
+			repository.delete(10000L);
+			assertNull(repository.findById(10000L));
 		} catch (Exception e) {
 			assertFalse(true);
 		}

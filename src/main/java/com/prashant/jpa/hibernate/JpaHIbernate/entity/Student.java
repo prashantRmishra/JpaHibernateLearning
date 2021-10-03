@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,6 +30,15 @@ public class Student {
 	@Column(nullable=false)
 	private String name;
 	
+	@Embedded
+	private Address address;
+	
+	public Address getAddress() {
+		return address;
+	}
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 	@OneToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Passport passport;

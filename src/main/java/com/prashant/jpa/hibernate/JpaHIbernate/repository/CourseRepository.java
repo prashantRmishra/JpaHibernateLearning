@@ -32,7 +32,8 @@ public class CourseRepository {
 	/*Delete by id method*/
 	public void delete(Long id) {
 		
-		em.remove(findById(id));
+		Course course = findById(id);
+		em.remove(course);
 	}
 	
 	public Course save(Course c) {
