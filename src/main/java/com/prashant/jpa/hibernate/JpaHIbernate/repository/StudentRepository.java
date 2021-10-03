@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Passport;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.ReviewRating;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Student;
 
 @Repository
@@ -83,7 +84,7 @@ public class StudentRepository {
 	/*Student adding reviews*/
 	public void addStudentReviewsHardCoded() {
 		//Remember the owning side is review (one student many reviews)
-		Review review =  new Review("*****", "Man! what a couese it is !");
+		Review review =  new Review(ReviewRating.FOUR, "Man! what a couese it is !");
 		em.persist(review);
 		Student student = new Student("Dwight shroot");
 		student.addReview(review);

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Course;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.ReviewRating;
 
 @Repository
 @Transactional
@@ -85,8 +86,8 @@ public class CourseRepository {
 		logger.info("List of Reviews -> {}",course.getReviews());
 		
 		//2.create two more reviews
-		Review review1 = new Review("****", "Its a very good course");
-		Review review2 = new Review("***","Its all course");
+		Review review1 = new Review(ReviewRating.FOUR, "Its a very good course");
+		Review review2 = new Review(ReviewRating.ONE,"Its all course");
 		
 		//3.Setting the Relationship
 		//assign review1 to course that has id 10002

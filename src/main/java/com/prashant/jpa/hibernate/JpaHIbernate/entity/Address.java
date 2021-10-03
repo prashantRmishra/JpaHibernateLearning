@@ -15,4 +15,5 @@ public class Address {
 		this.line2 = line2;
 		this.city = city;
 	}
+	public Address() {}
 }

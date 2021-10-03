@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.FullTimeEmployee;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.PartTimeEmployee;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Review;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.ReviewRating;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.CourseRepository;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.EmployeeRepository;
 import com.prashant.jpa.hibernate.JpaHIbernate.repository.StudentRepository;
@@ -51,7 +52,7 @@ public class JpaHibernateApplication implements CommandLineRunner {
 		//repo.addReviewForCOurse();
 		Long courseId = 10003L;
 		List<Review> reviews = new ArrayList<>();
-		Review review  = new Review("****","Its a funny course");
+		Review review  = new Review(ReviewRating.FOUR,"Its a funny course");
 		reviews.add(review);
 		//repo.addReviewForCOurse(courseId, reviews);
 		//----------------------------------------------------------------------

@@ -118,6 +118,125 @@ JPA Life Cycle Hooks or Methods
 
 We have already seen ``preRemove``
 
+____
+
+Using ``@Embedded`` and ``@Embeddable`` 
+---
+
+If student has field Address and you want to store the address directly int ostudent table , not in Address table. Then we can use ``@Embeddable`` abd ``@Embedded`` .
+
+create class ``Address.java`` and add annotation ``@Embeddable``
+
+```java
+
+@Embeddable
+public class Address {
+
+	private String line1;
+	private String line2;
+	private String city;
+	
+	public Address(String line1, String line2, String city) {
+		super();
+		this.line1 = line1;
+		this.line2 = line2;
+		this.city = city;
+	}
+	public Address() {}
+}
+
+```
+create field address in ``Student.java`` class
+
+```java
+	@Embedded
+	private Address address;
+```
+	
+IF we run the following test method.
+
+```java
+/*Inserting Address directly to the student table*/
+	@Test
+	@Transactional
+	void insertAddressIntoStudent() {
+		Student student = entityManager.find(Student.class, 20001L);
+		student.setAddress(new Address("Room no 202/Patidar complex ", "Kalher pipeline", "Kalher thane west"));
+		entityManager.flush(); // storing in db till this point.
+	
+	}
+```
+We will get following console output:
+
+ 
+```log
+Hibernate: select student0_.id as id1_5_0_, student0_.city as city2_5_0_, student0_.line1 as line3_5_0_, student0_.line2 as line4_5_0_, student0_.name as name5_5_0_, student0_.passport_id as passport6_5_0_ from student student0_ where student0_.id=?
+2021-10-03 13:51:10.732 TRACE 3696 --- [           main] o.h.type.descriptor.sql.BasicBinder      : binding parameter [1] as [BIGINT] - [20001]
+2021-10-03 13:51:10.763 TRACE 3696 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([city2_5_0_] : [VARCHAR]) - [null]
+2021-10-03 13:51:10.763 TRACE 3696 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line3_5_0_] : [VARCHAR]) - [null]
+2021-10-03 13:51:10.763 TRACE 3696 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([line4_5_0_] : [VARCHAR]) - [null]
+2021-10-03 13:51:10.764 TRACE 3696 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([name5_5_0_] : [VARCHAR]) - [Prashant]
+2021-10-03 13:51:10.766 TRACE 3696 --- [           main] o.h.type.descriptor.sql.BasicExtractor   : extracted value ([passport6_5_0_] : [BIGINT]) - [30001]
+2021-10-03 13:51:10.801 TRACE 3696 --- [           main] org.hibernate.type.CollectionType        : Created collection wrapper: [com.prashant.jpa.hibernate.JpaHIbernate.entity.Student.courses#20001]
+2021-10-03 13:51:10.823 TRACE 3696 --- [           main] org.hibernate.type.CollectionType        : Created collection wrapper: [com.prashant.jpa.hibernate.JpaHIbernate.entity.Student.reviews#20001]
+Hibernate: update student set city=?, line1=?, line2=?, name=?, passport_id=? where id=?
+```
+As we can see, update on student table is called with new fields line1, lin2, and city.
+
+If you manually want to add data to table , add them directly from ``data.sql`` table.
+
+```sql
+insert into Student(id,name,passport_id,line1,line2,city) values(20001,'Prashant',30001,'line1','line2','sikandarabad');
+```
+
+Using ENUM with JPA
+---
+We have used ``String rating`` in ``Review.java`` class which is not a good practice, we as the values for the ``rating`` field are only ``1,2,3,4,5``. Hence using string is not a good practice.
+
+We can use ENUM for it.
+
+``ReviewRating.java``
+
+```java
+package com.prashant.jpa.hibernate.JpaHIbernate.entity;
+
+public enum ReviewRating {
+	ONE,TWO,THREE,FOUR,FIVE
+}
+
+```
+``Review.java``
+
+```java
+
+@Entity
+public class Review {
+	@Id
+	@GeneratedValue
+	private Long id;
+	
+	@Enumerated
+	private ReviewRating rating;
+	
+	....
+	}
+```
+
+Update your ``data.sql`` appropreately as well 
+
+Example
+
+```sql
+insert into Review(id,rating,description,course_id,student_id) values(40001,4,'Good course',10001,20001);
+
+```
+As we can see that the type of the rating is ``Ordinal`` i.e it will be stored as integer in table. Its better to have it as String, integer would be based on index position which is not good.
+
+
+
+
+
+
 
 
 

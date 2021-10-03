@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.prashant.jpa.hibernate.JpaHIbernate.JpaHibernateApplication;
+import com.prashant.jpa.hibernate.JpaHIbernate.entity.Address;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Passport;
 import com.prashant.jpa.hibernate.JpaHIbernate.entity.Student;
 
@@ -77,8 +78,9 @@ class StudentRepositoryTest {
 	@Transactional
 	void insertAddressIntoStudent() {
 		Student student = entityManager.find(Student.class, 20001L);
-		logger.info("Student -> {}",student);
-		logger.info("Passport -> {}",student.getPassport());
+		student.setAddress(new Address("Room no 202/Patidar complex ", "Kalher pipeline", "Kalher thane west"));
+		entityManager.flush(); // storing in db till this point.
+	
 	}
 	
 	
