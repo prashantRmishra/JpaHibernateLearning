@@ -67,3 +67,5 @@ Add following to ``application.properties``
 
 Actually it has been deprecated, I will add something new.
 
+[For understanding how first level and second level caching works refer this](https://medium.com/swlh/what-is-hibernate-caching-introduction-of-level-1-level-2-cache-8ea7339a5052)
+
