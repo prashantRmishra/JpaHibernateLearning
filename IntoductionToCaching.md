@@ -11,7 +11,7 @@ When it comes to ``Hibernate`` there are two level of caching
 PersistenceContext ----> FirstLevelCache ----> SecondLevelCache ----> Database
 ----
 
-**First level Cache**
+**First Level Cache**
 
 When two or more operation within the same **Transaction** want to access the same data then First level cache comes into picture.
 
